@@ -11,20 +11,23 @@ class FirestoreLessondevoir extends GetxController {
 
 
   ValueNotifier<bool> get loading => _loading;
+  
   ValueNotifier<bool> _loading = ValueNotifier(false);
+  //Creer une collection de nom "Homework_lessonUser" dans firestoreDatabase Firebase 
   CollectionReference _userCollectionRef =
       FirebaseFirestore.instance.collection("Homework_lessonUser");
+  //Creer une collection de nom "EtudiantUser" dans firestoreDatabase Firebase 
   CollectionReference _userCollectionRef1 =
       FirebaseFirestore.instance.collection("EtudiantUser");
 
   List<Homework_Lesson> get homework_lesson => _homework_lesson;
   List<Homework_Lesson> _homework_lesson = [];
-  DateTime dateTime = DateTime.now();
+ // DateTime dateTime = DateTime.now();
   FirestoreLessondevoir() {
-    getData();
+   // getData();
   }
 
-  Future<void> addCourToFireStore(Homework_Lesson courhomeworkinfo) async {
+  Future<void> addLesson_Homework_ExamToFireStore(Homework_Lesson courhomeworkinfo) async {
     // return await _userCollectionRef
     //   .doc(courhomeworkinfo.title)
     // .set(courhomeworkinfo.toJson());
@@ -41,11 +44,11 @@ class FirestoreLessondevoir extends GetxController {
     return await _userCollectionRef
         .add(courhomeworkinfo.toJson())
         .then((value) {
-      print("user add");
+     
     });
   }
 
-  Future<void> filter() async {
+  /*Future<void> filter() async {
     await _userCollectionRef
         .where("jour", isEqualTo: dateTime.day)
         .where("mois", isEqualTo: dateTime.month)
@@ -58,9 +61,9 @@ class FirestoreLessondevoir extends GetxController {
         print("-----------------------");
       });
     });
-  }
+  }*/
 
-  getData() async {
+ /* getData() async {
     loading.value = true;
 
     await _userCollectionRef
@@ -75,5 +78,5 @@ class FirestoreLessondevoir extends GetxController {
       }
       update();
     });
-  }
+  }*/
 }

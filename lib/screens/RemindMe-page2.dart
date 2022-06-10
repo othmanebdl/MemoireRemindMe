@@ -5,13 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:googleapis/artifactregistry/v1.dart';
 //import 'package:memoire/Widgts/LIstView.dart';
-import 'package:testgoogle/Widgts/LIstView.dart';
 //import 'package:memoire/screens/Add_tasks.dart';
-import 'package:testgoogle/screens/Add_tasks.dart';
+
+import 'package:testgoogle/screens/Add_tasks_online.dart';
 //import 'package:memoire/screens/RemindMe-page1.dart';
 import 'package:testgoogle/screens/RemindMe-page1.dart';
 import 'package:testgoogle/screens/Controlle-scrollviewAll.dart';
 import 'package:testgoogle/screens/controlle_scroll_viewToday.dart';
+import 'package:testgoogle/screens/controlle_scroll_viexExam.dart';
 import 'package:testgoogle/view-model/service_firestore/firestoreLessHomework.dart';
 import 'package:testgoogle/view-model/auth_view_model.dart';
 import 'package:testgoogle/screens/controlle_scroll_viewHomework.dart';
@@ -21,7 +22,7 @@ CollectionReference userCollectionRef =
     FirebaseFirestore.instance.collection("Homework_lessonUser");
 
 class RemindMe2 extends StatefulWidget {
-  const RemindMe2({Key? key}) : super(key: key);
+  const RemindMe2({Key key}) : super(key: key);
 
   @override
   State<RemindMe2> createState() => _RemindMe2State();
@@ -29,6 +30,7 @@ class RemindMe2 extends StatefulWidget {
 
 class _RemindMe2State extends State<RemindMe2> {
   var typetask = Get.arguments;
+  var routeur = Get.arguments;
   ScrollController _scrollController = new ScrollController();
   bool backtoTop = false;
   bool isLastIndex = false;
@@ -49,102 +51,117 @@ class _RemindMe2State extends State<RemindMe2> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Container(
-        width: 95,
-        height: 95,
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.white, width: 8),
-          shape: BoxShape.circle,
-        ),
-        child: FloatingActionButton(
-          onPressed: () {
-            showModalBottomSheet(
-                context: context, builder: (context) => AddTask());
-          },
-          backgroundColor: Colors.red,
-          child: Icon(Icons.add, color: Colors.white, size: 45),
-        ),
-      ),
-      backgroundColor: Colors.white,
       body: Container(
-        padding: EdgeInsets.fromLTRB(20, 0, 20, 80),
+        constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height,
+            maxWidth: MediaQuery.of(context).size.width),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(colors: [
+       Color(0xff274472),
+       Color(0xff274472)
+          ], begin: Alignment.topLeft, end: Alignment.centerRight),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 60.0),
-                  child: Row(
-                    children: [
-                      Icon(Icons.playlist_add_check,
-                          color: Colors.red, size: 40),
-                      SizedBox(width: 10),
-                      Text('RemindMe',
-                          style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 35,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Raleway')),
-                    ],
+            Expanded(
+              flex: 1,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 60.0),
+                    child: Row(
+                      children: [
+                        IconButton(
+                            icon: Icon(Icons.arrow_back_ios,
+                                size: 27, color: Colors.white),
+                            onPressed: () {
+                              Get.to(RemindMe1());
+                            }),
+                        SizedBox(width: 15),
+                        if (typetask == 1) ...[
+                          Text('All tasks',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 35,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Raleway')),
+                        ] else if (typetask == 2) ...[
+                          Text('Today tasks',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 35,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Raleway')),
+                        ] else if (typetask == 3) ...[
+                          Text('Home Work tasks',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 35,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Raleway')),
+                        ] else if(typetask==4)...[
+                          Text('Lessons tasks',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 35,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Raleway')),
+                        ]
+                        else ...{
+                          Text('Exam tasks',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 35,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Raleway')),
+                        }
+                      ],
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 20.0, top: 55),
-                  child: IconButton(
-                    icon: const Icon(Icons.close, size: 40, color: Colors.red),
-                    onPressed: () {
-                      // Navigator.of(context).pushReplacement(
-                      //  MaterialPageRoute(builder: (_) => RemindMe1()));
-                      Get.offAll(RemindMe1() /*arguments: length*/);
-                    },
-                  ),
-                ),
-              ],
+                 
+                ],
+              ),
             ),
             SizedBox(
               height: 40,
             ),
             Expanded(
+              flex: 5,
               child: Container(
+                width: double.infinity,
                 decoration: BoxDecoration(
-                    color: Colors.red[200],
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(40),
+                      topRight: Radius.circular(40)),
+                ),
                 child: Stack(
                   children: [
-                    if(typetask ==1)...[
+                    if (typetask == 1 || routeur == 1) ...[
                       buildListViewAll(_scrollController),
                       buildBTTAll(_scrollController, backtoTop),
                       buildTextAll(isLastIndex),
-      
-    ]else if(typetask==2)...[
-      buildListViewToday(_scrollController),
-      buildBTTToday(_scrollController, backtoTop),
-      buildTextToday(isLastIndex),
-
-
-      
-    ]
-    else if(typetask==3)...[
-      buildListViewHomework(_scrollController),
-      buildBTTHomework(_scrollController, backtoTop),
-      buildTextHomework(isLastIndex),
-
-
-      
-    ]
-    else ...[
-       buildListViewLesson(_scrollController),
-      buildBTTLesson(_scrollController, backtoTop),
-      buildTextLesson(isLastIndex),
-
-    ]
-             
-                    
-                     
+                    ] else if (typetask == 2 || routeur == 2) ...[
+                      buildListViewToday(_scrollController),
+                      buildBTTToday(_scrollController, backtoTop),
+                      buildTextToday(isLastIndex),
+                    ] else if (typetask == 3 || routeur == 3) ...[
+                      buildListViewHomework(_scrollController),
+                      buildBTTHomework(_scrollController, backtoTop),
+                      buildTextHomework(isLastIndex),
+                    ] else if(typetask==4 || routeur == 4)...[
+                      buildListViewLesson(_scrollController),
+                      buildBTTLesson(_scrollController, backtoTop),
+                      buildTextLesson(isLastIndex),
+                    ]
+                    else ...[
+                      buildListViewExam(_scrollController),
+                      buildBTTExam(_scrollController, backtoTop),
+                      buildTextExam(isLastIndex),
                  
+                    ]
                   ],
                 ),
               ),
@@ -155,4 +172,3 @@ class _RemindMe2State extends State<RemindMe2> {
     );
   }
 }
- 
