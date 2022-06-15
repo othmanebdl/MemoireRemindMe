@@ -6,7 +6,7 @@ import 'package:testgoogle/videoYoutube/repository/youtube_repository.dart';
 
 class TaskVedController extends GetxController {
   static TaskVedController get to => Get.find();
-  //If you need to use your controller in many other places, and outside of GetBuilder, just create a get in your controller and have it easily. (or use Get.find<Controller>() ) نصيحه يعني
+  
 
   ScrollController scrollController = ScrollController();
 
