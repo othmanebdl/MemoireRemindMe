@@ -1,6 +1,6 @@
 import 'package:sqflite/sqflite.dart' as sql;
 
-DateTime selectedDate = DateTime.now();
+
 
 class SQLHelper {
   static Future<void> createTables(sql.Database database) async {
@@ -50,19 +50,10 @@ class SQLHelper {
     final db = await SQLHelper.db();
     return db.query('task');
   }
-    static Future<List<Map<String, dynamic>>> getDatataskcour() async {
-    final db = await SQLHelper.db();
-    return db.query('task',where: "typetask = ?",whereArgs: ['Lesson']);
-  }
-    static Future<List<Map<String, dynamic>>> getDatataskdevoir() async {
-    final db = await SQLHelper.db();
-    return db.query('task',where: "typetask = ?",whereArgs: ['Homework']);
-  }
+  
+ 
 
-  /*static Future<List<Map<String, dynamic>>> getDatataskToday() async {
-    final db = await SQLHelper.db();
-    return db.query('task');
-  }*/
+
 
   static Future<List<Map<String, dynamic>>> getDataWithsearch(
       String title) async {

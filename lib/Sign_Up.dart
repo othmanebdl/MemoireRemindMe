@@ -1,16 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:testgoogle/main.dart';
-import 'package:testgoogle/screens/RemindMe-page1.dart';
-//import 'package:googleapis/adsense/v2.dart';
-//import 'package:googleapis/content/v2_1.dart';
 import 'package:testgoogle/view-model/auth_view_model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:testgoogle/view-model/service_firestore/FirestoreUser.dart';
 
-import 'model/User_information.dart';
 
 Authviewmodel controller = Authviewmodel();
 String username;
@@ -23,30 +17,13 @@ class Sign_up extends StatefulWidget {
 }
 
 class _Sign_upState extends State<Sign_up> {
-  String nameuser;
-  String email;
-  String password;
-  bool password_obscure_text = true;
+  String nameuser; //le nom de l'utilisateur
+  String email;//l'email de l'utilisateur
+  String password;//le mot de pass de l'utlisateur
+  bool password_obscure_text = true; // 
   var iconvisibilty = Icons.visibility;
-  int count_password_obscure_text = 0;
-  Future<UserCredential> signInWithGoogle() async {
-    // Trigger the authentication flow
-    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
-
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
-
-    // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
-
-    // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
-  }
-
+  int count_password_obscure_text = 0;//Pour voir si le mot de passe apparaît ou non
+  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -86,7 +63,7 @@ class _Sign_upState extends State<Sign_up> {
                                 alignment: Alignment.topRight,
                                 child: GestureDetector(
                                     onTap: () {
-                                      Get.offAll(Homepage());
+                                      Get.to(Homepage());//Pour revenir à la page d'accueil
                                     },
                                     child: Icon(
                                       Icons.arrow_back,
@@ -126,7 +103,9 @@ class _Sign_upState extends State<Sign_up> {
                               children: [
                                 TextFormField(
                                   onChanged: (value) {
-                                    // controller.nameuser = value;
+                                  /* affecter la valeur entrer par l'utilisateur dans variable
+                                  name user
+                                  */
                                     Authviewmodel.nameuser = value;
                                     username = value;
                                   },
@@ -147,6 +126,9 @@ class _Sign_upState extends State<Sign_up> {
                                 ),
                                 TextFormField(
                                   onChanged: (value) {
+                                       /* affecter la valeur entrer par l'utilisateur dans variable
+                                  email
+                                  */
                                     controller.email = value;
                                     email = value;
                                   },
@@ -171,6 +153,9 @@ class _Sign_upState extends State<Sign_up> {
                                   autofocus: false,
                                   maxLength: 8,
                                   onChanged: (value) {
+                                     /* affecter la valeur entrer par l'utilisateur dans variable
+                                  password
+                                  */
                                     controller.password = value;
                                     password = value;
                                   },
@@ -179,6 +164,7 @@ class _Sign_upState extends State<Sign_up> {
                                         icon: Icon(iconvisibilty),
                                         onPressed: () {
                                           setState(() {
+                                            //pour changer icon de visibiliti mot de pass
                                             count_password_obscure_text++;
                                             if (count_password_obscure_text %
                                                     2 ==
@@ -218,7 +204,7 @@ class _Sign_upState extends State<Sign_up> {
                                     ),
                                   ),
                                   onPressed: () {
-                                    //print(controller.nameuser);
+                                    
 
                                     // on appele la methode qui creer compte de l'utilisateur
                                     controller
@@ -236,18 +222,12 @@ class _Sign_upState extends State<Sign_up> {
                                   padding: EdgeInsets.fromLTRB(40, 20, 40, 20),
                                   child: ElevatedButton(
                                     onPressed: () async {
-                                      // _buttomsheetcreateaccount(context);
-                                      // UserCredential cred = await signInWithGoogle();
-                                      //Navigator.of(context).push(
-                                      //MaterialPageRoute(builder: (context) => RemindMe1()),
-                                      // );
-                                      // Get.to(RemindMe1());
+                                   
                                       await controller
                                           .signInWithGoogle(); /*on appele la methode qui faire login
                                                                 par le compte google*/
 
-                                      //UserCredential usercred = await signInWithGoogle();
-                                      //
+                              
                                     },
                                     child: Row(
                                       mainAxisAlignment:

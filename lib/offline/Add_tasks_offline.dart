@@ -1,15 +1,12 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_unnecessary_containers, unused_local_variable, prefer_final_fields, unused_field, avoid_print
 
-import 'package:date_time/date_time.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:testgoogle/Widgts/input_field.dart';
 import 'package:testgoogle/offline/HomepageHc.dart';
 import 'package:testgoogle/offline/sql_helper.dart';
-import 'package:testgoogle/screens/RemindMe-page1.dart';
-import 'package:testgoogle/screens/SearchTask.dart';
-import 'package:testgoogle/view-model/service_firestore/firestoreLessHomework.dart';
-import 'package:convex_bottom_bar/convex_bottom_bar.dart';
+import 'package:testgoogle/view-model/service_firestore/firestoreLessHomework_Exam.dart';
 import '../view-model/auth_view_model.dart';
 
 
@@ -41,11 +38,6 @@ class _Add_Task_offlineState extends State<Add_Task_offline> {
   void initState() {
     // TODO: implement initState
     refreshtask();
-    /*jour = selectedDate.day;
-    mois = selectedDate.month;
-    year = selectedDate.year;
-    hour = selectedTime.hour;
-    minute = selectedTime.minute;*/
 
     super.initState();
   }
@@ -66,13 +58,9 @@ class _Add_Task_offlineState extends State<Add_Task_offline> {
 
   @override
   Widget build(BuildContext context) {
-    //jour = selectedDate.day;
+
     typetask = value;
-    //mois = selectedDate.month;
-    //year = selectedDate.year;
-    //hour = selectedTime.hour;
-    //minute = selectedTime.minute;
-    //controller.keytitle.clear();
+   
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Builder(builder: (context) {
@@ -82,22 +70,7 @@ class _Add_Task_offlineState extends State<Add_Task_offline> {
             },
             child: Scaffold(
 
-                /*appBar: AppBar(
-                 shape: RoundedRectangleBorder(
-                 
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(30))),
-                  backgroundColor:Color(0xfff0f0f0) ,
-                  leading: IconButton(
-                      icon: const Icon(
-                        Icons.arrow_back_ios,
-                        size: 25,
-                        color:Color(0xff274472) ,
-                      ),
-                      onPressed: () {
-                        Get.to(RemindMe1());
-                      })),*/
+              
                 body: Container(
                     padding: EdgeInsets.only(top: 45, left: 20, right: 20),
                     child: SingleChildScrollView(
@@ -128,9 +101,7 @@ class _Add_Task_offlineState extends State<Add_Task_offline> {
                               width: double.infinity,
                               child: DropdownButtonFormField(
                                   icon: iconlist,
-                                  /*value == "Lesson"
-                                    ? Icon(Icons.book)
-                                    : Icon(Icons.home_work),*/
+                                
                                   decoration: InputDecoration(
                                     fillColor: Colors.grey,
                                     border: OutlineInputBorder(
@@ -218,7 +189,7 @@ class _Add_Task_offlineState extends State<Add_Task_offline> {
                             ),
                           ),
                           SizedBox(height: 40),
-                          //InputField(title: "description", hint: "the descrition"),
+                        
                           InputField(
                             title:
                                 "Date : ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}",
@@ -247,7 +218,7 @@ class _Add_Task_offlineState extends State<Add_Task_offline> {
                           ),
                           InputField(
                             title:
-                                "Time : ${selectedTime.hour + 1}:${selectedTime.minute}",
+                                "Time : ${selectedTime.hour}:${selectedTime.minute}",
                             hint: "Select the time",
                             widget: IconButton(
                               icon: const Icon(
@@ -270,7 +241,7 @@ class _Add_Task_offlineState extends State<Add_Task_offline> {
                           ),
                           SizedBox(height: 60),
                           Container(
-                              // margin: EdgeInsets.only(top: 20),
+                              
                               child: Center(
                             child: ElevatedButton(
                                 onPressed: () async {
@@ -286,7 +257,8 @@ class _Add_Task_offlineState extends State<Add_Task_offline> {
                                     snackBarAll("Date");
                                   } else if (hour == null || minute == null) {
                                     snackBarAll("Time");
-                                  } else if (hour < TimeOfDay.now().hour ||
+                                  } 
+                                   else if (hour < TimeOfDay.now().hour ||
                                       minute < TimeOfDay.now().minute) {
                                     snackBarWrongTime();
                                   } else {

@@ -1,20 +1,15 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
-
 import 'package:testgoogle/Widgts/input_field.dart';
 import 'package:testgoogle/offline/Add_tasks_offline.dart';
 import 'package:testgoogle/offline/AlanAssistant.dart';
 import 'package:testgoogle/offline/DetailTaskHc.dart';
 import 'package:testgoogle/offline/RechercheTask.dart';
-//import 'package:testgoogle/hors-connexion/showAlltask.dart';
 import 'package:testgoogle/offline/sql_helper.dart';
 import 'package:get/get.dart';
 import 'package:testgoogle/main.dart';
-import 'package:timezone/data/latest_all.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
+import 'package:alan_voice/alan_voice.dart';
 class HomepageHc extends StatefulWidget {
   HomepageHc({Key key}) : super(key: key);
 
@@ -22,7 +17,9 @@ class HomepageHc extends StatefulWidget {
   State<HomepageHc> createState() => _HomepageHcState();
 }
 
-class _HomepageHcState extends State<HomepageHc> with WidgetsBindingObserver {
+class _HomepageHcState extends State<HomepageHc> {
+  
+  //instance pour utiliser les methode de envoyer les notification
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   static final List<String> items = <String>["Lesson", "Homework", "Exam"];
@@ -47,7 +44,7 @@ class _HomepageHcState extends State<HomepageHc> with WidgetsBindingObserver {
     refreshtask();
 
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
 
     var androidInitialize = new AndroidInitializationSettings('todolist');
@@ -59,34 +56,7 @@ class _HomepageHcState extends State<HomepageHc> with WidgetsBindingObserver {
         onSelectNotification: selectNotifcation);
   }
 
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.inactive ||
-        state == AppLifecycleState.detached) return;
-    final background = state == AppLifecycleState.paused;
-    if (background) {
-      //_showNotification("title1", "description1");
-
-      //listview();
-    }
-  }
-
   Future selectNotifcation(String payload) async {
-    print(titlenotification);
-    print(descriptionotification);
-    print("${journotification}");
-    print("${moisnotification}");
-    print("${yearnotification}");
-    print("${hournotification}");
-    print("${minutenotification}");
     Get.to(DetailTaskHC(), arguments: [
       titlenotification,
       descriptionotification,
@@ -98,38 +68,7 @@ class _HomepageHcState extends State<HomepageHc> with WidgetsBindingObserver {
     ]);
   }
 
-  Future _showNotification(String title1, String description1) async {
-    var androidDetails = new AndroidNotificationDetails(
-        "channelId", "channelName",
-        importance: Importance.max);
-    var iOsDetails = new IOSNotificationDetails();
-    var generalNotificationDetails =
-        new NotificationDetails(android: androidDetails, iOS: iOsDetails);
-    /*var scheduledTime = DateTime.now().add(Duration(minutes: 1));
-    await flutterLocalNotificationsPlugin.schedule(1, "you crated a task",
-        "fdgfd", scheduledTime, generalNotificationDetails);*/
-
-    await flutterLocalNotificationsPlugin.show(
-        0, title1, description1, generalNotificationDetails,
-        payload: "send message");
-    /* await flutterLocalNotificationsPlugin.zonedSchedule(1, "dfsds", "task",
-        tz.TZDateTime.from(scheduledTime, tz.local), generalNotificationDetails,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-        androidAllowWhileIdle: true);*/
-    /*await flutterLocalNotificationsPlugin.zonedSchedule(
-        0,
-        'scheduled title',
-        'scheduled body',
-        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
-        const NotificationDetails(
-            android: AndroidNotificationDetails(
-                'your channel id', 'your channel name',
-                channelDescription: 'your channel description')),
-        androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime);*/
-  }
+ 
 
   Future _showScheduledNotification(
       int id1, String title1, String description1) async {
@@ -141,36 +80,20 @@ class _HomepageHcState extends State<HomepageHc> with WidgetsBindingObserver {
       fullScreenIntent: true,
       playSound: true,
       color: Color(0xff334973),
-      enableLights: true,
       enableVibration: true,
-      styleInformation:
-          MediaStyleInformation(htmlFormatContent: true, htmlFormatTitle: true),
     );
     var iOsDetails = new IOSNotificationDetails();
     var generalNotificationDetails =
         new NotificationDetails(android: androidDetails, iOS: iOsDetails);
     var scheduledTime = DateTime.now().add(Duration(seconds: 0));
     await flutterLocalNotificationsPlugin.schedule(
-        id1, title1, description1, scheduledTime, generalNotificationDetails,
-        androidAllowWhileIdle: true);
-
-    /* await flutterLocalNotificationsPlugin.zonedSchedule(1, "dfsds", "task",
-        tz.TZDateTime.from(scheduledTime, tz.local), generalNotificationDetails,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-        androidAllowWhileIdle: true);*/
-    /*await flutterLocalNotificationsPlugin.zonedSchedule(
-        0,
-        'scheduled title',
-        'scheduled body',
-        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
-        const NotificationDetails(
-            android: AndroidNotificationDetails(
-                'your channel id', 'your channel name',
-                channelDescription: 'your channel description')),
-        androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime);*/
+      id1,
+      title1,
+      description1,
+      scheduledTime,
+      generalNotificationDetails,
+      androidAllowWhileIdle: true,
+    );
   }
 
   static List<Map<String, dynamic>> listtask = [];
@@ -182,27 +105,7 @@ class _HomepageHcState extends State<HomepageHc> with WidgetsBindingObserver {
     });
   }
 
-  Widget listview() {
-    return ListView.builder(
-        itemCount: listtask.length,
-        itemBuilder: ((context, index) {
-          if (listtask[index]["hour"] == TimeOfDay.now().hour &&
-              listtask[index]["minute"] == TimeOfDay.now().minute) {
-            titlenotification = listtask[index]["title"];
-            descriptionotification = listtask[index]["description"];
-            journotification = listtask[index]['jour'];
-            moisnotification = listtask[index]['mois'];
-            yearnotification = listtask[index]["year"];
-            hournotification = listtask[index]["hour"];
-            minutenotification = listtask[index]["minute"];
-            /*  _showNotification(listtask[index]["title"],
-                                      listtask[index]["description"]);*/
-            _showScheduledNotification(listtask[index]["id"],
-                listtask[index]["title"], listtask[index]["description"]);
-            sleep(Duration(seconds: 60));
-          }
-        }));
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -234,9 +137,9 @@ class _HomepageHcState extends State<HomepageHc> with WidgetsBindingObserver {
                       color: Color(0xff3a5ba0),
                     ),
                     onPressed: () {
-                      //  _showNotification();
+                  
                       Get.to(Homepage());
-                      //  _showScheduledNotification();
+                    
                     },
                   ),
                 ],
@@ -244,9 +147,7 @@ class _HomepageHcState extends State<HomepageHc> with WidgetsBindingObserver {
               floatingActionButton: FloatingActionButton(
                 backgroundColor: Color(0xff1f4690),
                 onPressed: () {
-                  //modalForm(null);
                   Get.to(Add_Task_offline());
-                  //Get.to(Alan());
                 },
                 child: Icon(Icons.add),
               ),
@@ -286,7 +187,7 @@ class _HomepageHcState extends State<HomepageHc> with WidgetsBindingObserver {
                               if (listtask[index]["hour"] ==
                                       TimeOfDay.now().hour &&
                                   listtask[index]["minute"] ==
-                                      TimeOfDay.now().minute) {
+                                      TimeOfDay.now().minute && listtask[index]['jour']==DateTime.now().day&&listtask[index]['mois']==DateTime.now().month&&listtask[index]["year"]==DateTime.now().year) {
                                 titlenotification = listtask[index]["title"];
                                 descriptionotification =
                                     listtask[index]["description"];
@@ -295,20 +196,15 @@ class _HomepageHcState extends State<HomepageHc> with WidgetsBindingObserver {
                                 yearnotification = listtask[index]["year"];
                                 hournotification = listtask[index]["hour"];
                                 minutenotification = listtask[index]["minute"];
-                                /*  _showNotification(listtask[index]["title"],
-                                      listtask[index]["description"]);*/
+                              
                                 if (DateTime.now().second == 0) {
                                   _showScheduledNotification(
                                       listtask[index]["id"],
                                       listtask[index]["title"],
                                       listtask[index]["description"]);
                                 }
-                                //sleep(Duration(seconds: 60));
                               }
-                              /* if (listtask[index]['minute'] == DateTime.now().minute) {
-                    _showNotification(
-                        listtask[index]['title'], listtask[index]['description']);
-                  }*/
+
                               refreshtask();
                               return Padding(
                                 padding:
@@ -387,9 +283,9 @@ class _HomepageHcState extends State<HomepageHc> with WidgetsBindingObserver {
                                                   color: Colors.white,
                                                   iconSize: 40,
                                                   onPressed: () {
-                                                    /* modalForm(
-                                                        listtask[index]['id']);*/
-                                                    Get.to(Alan());
+                                                    modalForm(
+                                                        listtask[index]['id']);
+                                                    
                                                   }),
                                               IconButton(
                                                   icon: Icon(Icons.delete),
@@ -414,7 +310,7 @@ class _HomepageHcState extends State<HomepageHc> with WidgetsBindingObserver {
                               if (listtask[index]["hour"] ==
                                       TimeOfDay.now().hour &&
                                   listtask[index]["minute"] ==
-                                      TimeOfDay.now().minute) {
+                                      TimeOfDay.now().minute&& listtask[index]['jour']==DateTime.now().day&&listtask[index]['mois']==DateTime.now().month&&listtask[index]["year"]==DateTime.now().year) {
                                 titlenotification = listtask[index]["title"];
                                 descriptionotification =
                                     listtask[index]["description"];
@@ -423,8 +319,7 @@ class _HomepageHcState extends State<HomepageHc> with WidgetsBindingObserver {
                                 yearnotification = listtask[index]["year"];
                                 hournotification = listtask[index]["hour"];
                                 minutenotification = listtask[index]["minute"];
-                                /*  _showNotification(listtask[index]["title"],
-                                      listtask[index]["description"]);*/
+                               
                                 if (DateTime.now().second == 0) {
                                   _showScheduledNotification(
                                       listtask[index]["id"],
@@ -432,9 +327,7 @@ class _HomepageHcState extends State<HomepageHc> with WidgetsBindingObserver {
                                       listtask[index]["description"]);
                                 }
                               }
-                              /* if (listtask[index]['minute'] == DateTime.now().minute) {
-                    _showNotification(
-                        listtask[index]['title'], listtask[index]['description']);*/
+                         
                               refreshtask();
                               if (listtask[index]["typetask"] == "Lesson") {
                                 return Padding(
@@ -542,7 +435,7 @@ class _HomepageHcState extends State<HomepageHc> with WidgetsBindingObserver {
                               if (listtask[index]["hour"] ==
                                       TimeOfDay.now().hour &&
                                   listtask[index]["minute"] ==
-                                      TimeOfDay.now().minute) {
+                                      TimeOfDay.now().minute&& listtask[index]['jour']==DateTime.now().day&&listtask[index]['mois']==DateTime.now().month&&listtask[index]["year"]==DateTime.now().year) {
                                 titlenotification = listtask[index]["title"];
                                 descriptionotification =
                                     listtask[index]["description"];
@@ -551,8 +444,7 @@ class _HomepageHcState extends State<HomepageHc> with WidgetsBindingObserver {
                                 yearnotification = listtask[index]["year"];
                                 hournotification = listtask[index]["hour"];
                                 minutenotification = listtask[index]["minute"];
-                                /*  _showNotification(listtask[index]["title"],
-                                      listtask[index]["description"]);*/
+                               
                                 if (DateTime.now().second == 0) {
                                   _showScheduledNotification(
                                       listtask[index]["id"],
@@ -667,7 +559,7 @@ class _HomepageHcState extends State<HomepageHc> with WidgetsBindingObserver {
                               if (listtask[index]["hour"] ==
                                       TimeOfDay.now().hour &&
                                   listtask[index]["minute"] ==
-                                      TimeOfDay.now().minute) {
+                                      TimeOfDay.now().minute&& listtask[index]['jour']==DateTime.now().day&&listtask[index]['mois']==DateTime.now().month&&listtask[index]["year"]==DateTime.now().year) {
                                 titlenotification = listtask[index]["title"];
                                 descriptionotification =
                                     listtask[index]["description"];
@@ -676,8 +568,7 @@ class _HomepageHcState extends State<HomepageHc> with WidgetsBindingObserver {
                                 yearnotification = listtask[index]["year"];
                                 hournotification = listtask[index]["hour"];
                                 minutenotification = listtask[index]["minute"];
-                                /*  _showNotification(listtask[index]["title"],
-                                      listtask[index]["description"]);*/
+                                
                                 if (DateTime.now().second == 0) {
                                   _showScheduledNotification(
                                       listtask[index]["id"],
@@ -797,7 +688,7 @@ class _HomepageHcState extends State<HomepageHc> with WidgetsBindingObserver {
                               if (listtask[index]["hour"] ==
                                       TimeOfDay.now().hour &&
                                   listtask[index]["minute"] ==
-                                      TimeOfDay.now().minute) {
+                                      TimeOfDay.now().minute&& listtask[index]['jour']==DateTime.now().day&&listtask[index]['mois']==DateTime.now().month&&listtask[index]["year"]==DateTime.now().year) {
                                 titlenotification = listtask[index]["title"];
                                 descriptionotification =
                                     listtask[index]["description"];
@@ -806,8 +697,7 @@ class _HomepageHcState extends State<HomepageHc> with WidgetsBindingObserver {
                                 yearnotification = listtask[index]["year"];
                                 hournotification = listtask[index]["hour"];
                                 minutenotification = listtask[index]["minute"];
-                                /*  _showNotification(listtask[index]["title"],
-                                      listtask[index]["description"]);*/
+                           
                                 if (DateTime.now().second == 0) {
                                   _showScheduledNotification(
                                       listtask[index]["id"],
@@ -924,7 +814,7 @@ class _HomepageHcState extends State<HomepageHc> with WidgetsBindingObserver {
         ));
   }
 
-  Future<void> tambTask() async {
+  Future<void> addTask() async {
     await SQLHelper.insert(
         title, description, typetask, jour, mois, year, hour, minute);
     refreshtask();
@@ -945,11 +835,11 @@ class _HomepageHcState extends State<HomepageHc> with WidgetsBindingObserver {
   void modalForm(int id) {
     TimeOfDay selectedTime1 = TimeOfDay.now();
     DateTime selectedDate1 = DateTime.now();
-    jour = selectedDate1.day;
-    mois = selectedDate1.month;
-    year = selectedDate1.year;
-    hour = selectedTime1.hour;
-    minute = selectedTime1.minute;
+    jour = null;
+    mois = null;
+    year = null;
+    hour = null;
+    minute = null;
     value = items.first;
     typetask = items.first;
     if (id != null) {
@@ -975,51 +865,6 @@ class _HomepageHcState extends State<HomepageHc> with WidgetsBindingObserver {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "Type of Task",
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 12),
-
-                        Center(
-                          child: Container(
-                            child: SizedBox(
-                              width: double.infinity,
-                              child: DropdownButtonFormField(
-                                  decoration: InputDecoration(
-                                    fillColor: Colors.grey,
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                        borderSide:
-                                            BorderSide(color: Colors.grey)),
-                                  ),
-                                  isExpanded: true,
-                                  icon: value == "cour"
-                                      ? Icon(Icons.book)
-                                      : Icon(Icons.home_work),
-                                  value: value,
-                                  items: items
-                                      .map((item) => DropdownMenuItem<String>(
-                                            child: Text(
-                                              item,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.normal,
-                                                  fontSize: 17,
-                                                  color: Colors.grey),
-                                            ),
-                                            value: item,
-                                          ))
-                                      .toList(),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      this.value = value.toString();
-                                      typetask = value;
-                                    });
-                                  }),
-                            ),
-                          ),
-                        ),
                         SizedBox(height: 12),
                         Text(
                           "Title",
@@ -1128,16 +973,26 @@ class _HomepageHcState extends State<HomepageHc> with WidgetsBindingObserver {
                             child: Center(
                           child: ElevatedButton(
                               onPressed: () async {
-                                if (id == null) {
-                                  await tambTask();
-                                } else {
-                                  await updateData(id);
-                                }
+                                 if (title == "" || title == null) {
+                                    snackBarAll("Title");
+                                  } else if (description == "" ||
+                                      description == null) {
+                                    snackBarAll("Description");
+                                  } else if (jour == null ||
+                                      mois == null ||
+                                      year == null) {
+                                    snackBarAll("Date");
+                                  } else if (hour == null || minute == null) {
+                                    snackBarAll("Time");
+                                  }  else {
+                                    await updateData(id);
 
                                 Get.back();
+                                  }
+                                
                               },
                               child: Text(
-                                id == null ? 'Add' : 'Update',
+                                'Update',
                                 style: TextStyle(
                                     fontWeight: FontWeight.w300,
                                     fontSize: 20,
@@ -1158,5 +1013,31 @@ class _HomepageHcState extends State<HomepageHc> with WidgetsBindingObserver {
                 ),
               ),
             ));
+  }
+  void snackBarAll(String type) {
+    Get.snackbar("Errore Add Task", "$type Empty",
+        colorText: Color.fromARGB(255, 255, 255, 255),
+        backgroundColor: Color(0xffffa500),
+        snackPosition: SnackPosition.TOP,
+        margin: EdgeInsets.symmetric(horizontal: 15),
+        isDismissible: true,
+        borderRadius: 20,
+        icon: Icon(
+          Icons.notifications,
+          color: Colors.white,
+        ));
+  }
+   void snackBarWrongTime() {
+    Get.snackbar("Errore Add Task", "Please select Time after Time now",
+        colorText: Color.fromARGB(255, 255, 255, 255),
+        backgroundColor: Color(0xffffa500),
+        snackPosition: SnackPosition.TOP,
+        margin: EdgeInsets.symmetric(horizontal: 15),
+        isDismissible: true,
+        borderRadius: 20,
+        icon: Icon(
+          Icons.notifications,
+          color: Colors.white,
+        ));
   }
 }

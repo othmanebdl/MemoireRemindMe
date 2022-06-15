@@ -1,4 +1,4 @@
-import 'package:firebase_core/firebase_core.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -43,7 +43,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                             alignment: Alignment.topRight,
                             child: GestureDetector(
                                 onTap: () {
-                                  Get.offAll(Sign_In());
+                                  Get.to(Sign_In());//Pour revenir à la page de login
                                 },
                                 child: Icon(
                                   Icons.arrow_back,
@@ -128,15 +128,18 @@ class _ResetPasswordState extends State<ResetPassword> {
                               ),
                               onPressed: () {
                                 if (email != null && email != "") {
+                                  /*pour envoyer a l'utulisateur un lien dans l'email pour récupirer 
+                                  le mot de pass
+                                  */
                                   auth.sendPasswordResetEmail(email: email);
                                   Get.to(Sign_In());
                                 } else {
                                   Get.snackbar(
                                       "Errore Resset Password", "Email Empty",
                                       colorText:
-                                          Color.fromARGB(255, 255, 255, 255),
+                                          Colors.white,
                                       backgroundColor:
-                                          Color.fromARGB(255, 173, 66, 59),
+                                          Color(0xffffa500),
                                       snackPosition: SnackPosition.BOTTOM,
                                       margin:
                                           EdgeInsets.symmetric(horizontal: 15),

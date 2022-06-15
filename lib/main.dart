@@ -1,46 +1,24 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:alan_voice/alan_voice.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:provider/provider.dart';
-import 'dart:ui';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:pinput/pin_put/pin_put_state.dart';
 import 'package:testgoogle/Sign_Up.dart';
 import 'package:testgoogle/Sign_inPage.dart';
 import 'package:get/get.dart';
 import 'package:testgoogle/help/Biding.dart';
-import 'package:testgoogle/offline/Add_tasks_offline.dart';
+import 'package:testgoogle/offline/AlanAssistant.dart';
 import 'package:testgoogle/offline/HomepageHc.dart';
-import 'package:testgoogle/offline/notification_service.dart';
-import 'package:testgoogle/src/app.dart';
-import 'package:testgoogle/src/binding/init_binding.dart';
-import 'package:testgoogle/src/components/youtube_detail.dart';
-import 'package:testgoogle/src/controller/video_controller.dart';
-import 'package:testgoogle/src/controller/youtube_detail_controller.dart';
-//import 'package:testgoogle/src/controller/youtube_search_controller.dart';
-//import 'package:testgoogle/src/pages/youtube_search.dart';
+import 'package:testgoogle/videoYoutube/controller/video_controller.dart';
 import 'package:testgoogle/view-model/auth_view_model.dart';
-import 'package:testgoogle/screens/RemindMe-page1.dart';
-import 'package:testgoogle/screens/RemindMe-page2.dart';
-import 'package:testgoogle/screens/SplashScreen.dart';
+import 'package:testgoogle/onlinescreens/RemindMe-page1.dart';
+import 'package:testgoogle/onlinescreens/SplashScreen.dart';
 import 'package:testgoogle/view-model/check_auth.dart';
-//import 'package:flutter/src/widgets/framework.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  NotificationService().initNotification();
   await Firebase.initializeApp();
   Binding().dependencies();
   Get.put(VideoController(), permanent: true);
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
 
   runApp(Splash());
 }
@@ -63,25 +41,6 @@ class _MemoirereminderState extends State<Memoirereminder> {
         //Initialiser les class Controller
         initialBinding: Binding(),
 
-        getPages: [
-          GetPage(name: "/", page: () => App()),
-          GetPage(
-            name: "/detail/:videoId",
-            page: () => YoutubeDetail(),
-            binding: BindingsBuilder(
-              () => Get.lazyPut<YoutubeDetailController>(
-                  () => YoutubeDetailController()),
-            ),
-          ),
-         /* GetPage(
-            name: "/search",
-            page: () => YoutubeSearch(),
-            binding: BindingsBuilder(
-              () => Get.lazyPut<YoutubeSearchController>(
-                  () => YoutubeSearchController()),
-            ),
-          )*/
-        ],
         debugShowCheckedModeBanner: false,
         home: Builder(builder: (context) {
           return GestureDetector(
@@ -109,41 +68,6 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  void _handleCommand(Map<String, dynamic> command) {
-    switch (command['command']) {
-      case 'offline':
-        {
-          Get.to(HomepageHc());
-          break;
-        }
-      case 'offline add task':
-        {
-         // Get.to(H());
-          break;
-        }
-      case 'online':
-        {
-          Get.find<Authviewmodel>().user != null
-              ? Get.to(RemindMe1())
-              : Get.to(Homepage());
-
-          break;
-        }
-    }
-  }
-
-  _AlanState() {
-    /// Init Alan Button with project key from Alan Studio
-    AlanVoice.addButton(
-        "19d677c90d4609f685cbd88da87bcb5b2e956eca572e1d8b807a3e2338fdd0dc/stage",
-        buttonAlign: AlanVoice.BUTTON_ALIGN_LEFT);
-
-    /// Handle commands from Alan Studio
-    AlanVoice.onCommand.add((command) {
-      _handleCommand(command.data);
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -224,10 +148,7 @@ class _HomepageState extends State<Homepage> {
                             ElevatedButton(
                               onPressed: () {
                                 setState(() {
-                                  //_buttomsheetlogin(context);
                                   Get.to(Sign_In());
-                                  //Get.to(RemindMe1());
-                                  //controller.SignIngoogle();
                                 });
                               },
                               style: ElevatedButton.styleFrom(
@@ -286,10 +207,7 @@ class _HomepageState extends State<Homepage> {
                             ElevatedButton(
                               onPressed: () {
                                 setState(() {
-                                  //_buttomsheetlogin(context);
                                   Get.to(HomepageHc());
-                                  //Get.to(RemindMe1());
-                                  //controller.SignIngoogle();
                                 });
                               },
                               style: ElevatedButton.styleFrom(
@@ -312,6 +230,21 @@ class _HomepageState extends State<Homepage> {
                       ],
                     ),
                   ),
+                  SizedBox(
+                    height:40
+                  ),
+                
+                  Container(
+                    alignment: Alignment.center,
+                    child: IconButton(
+                      icon: Icon(Icons.keyboard_voice_outlined),
+                    
+                      color: Color(0xff1f4690),
+                      onPressed: () {
+                        Get.to(Alan());
+                      },
+                    ),
+                  )
                 ]),
           ),
         )));
